@@ -1,0 +1,202 @@
+import React, { Component } from 'react';
+import { TextInput, View, StyleSheet, Picker, Image, Alert, ProgressBarAndroid } from 'react-native';
+import { Container, Text, Body, Icon, Button, Input, Card, CardItem, Item } from 'native-base';
+
+
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+class RegistrationScreen extends Component {
+
+    static navigationOptions = {
+        title: 'Registration',
+        header: null
+    };
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: undefined,
+            password: undefined,
+            email: undefined,
+            gender: 'male',
+        };
+        _onPressSubmit = () => {
+            var ObjToSend = {
+                name: this.state.name,
+                password: this.state.password,
+                email: this.state.email,
+                gender: this.state.gender,
+            }
+
+            var options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(ObjToSend),
+            };
+
+            fetch('http://192.168.0.105:8000/formData', options).then((res) => {
+                if (res.status == 200) {
+                    Alert.alert("User Successfully Registered");
+                    this.props.navigation.navigate("registration")
+
+                } else {
+                    Alert.alert("This Email is associatited with another account");
+
+                }
+
+            }).catch(function (error) {
+                console.log('There has been a problem with your fetch operation: ' + error.message);
+                throw error;
+            });
+        }
+    }
+    render() {
+        return (
+            <Container>
+                <View style={styles.logoContainer}>
+
+                    <Image
+                        style={styles.logo}
+                        source={{ uri: 'https://dwglogo.com/wp-content/uploads/2017/09/React_logo-1024x576.png' }}>
+                    </Image>
+
+                </View>
+                <View style={styles.formContainer}>
+                    <Card style={styles.registrationCard}>
+
+                        <CardItem style={styles.registrationCardHeader} bordered>
+                            <Text style={styles.registrationCardHeaderTitle}>Sign Up</Text>
+                        </CardItem>
+                        <CardItem style={styles.registrationCardBody} bordered>
+                            <Body>
+                                <Item style={styles.registrationCardInputs}>
+                                    <Icon active name='people' />
+                                    <Input placeholder='Name...' />
+                                </Item>
+                                <Item style={styles.registrationCardInputs}>
+                                    <Icon active name='mail' />
+                                    <Input placeholder='Enter Your Email...' />
+                                </Item>
+                                <Item style={styles.registrationCardInputs}>
+                                    <Icon active name='key' />
+                                    <Input secureTextEntry={true} placeholder='Enter Your Password...' />
+                                </Item>
+                                <Item style={[styles.registrationCardInputs, styles.w100]}>
+                                    <Icon active name='male' />
+                                    <Picker
+                                        selectedValue={this.state.gender}
+                                        style={{ height: 50, width: 120 }}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            this.setState({ gender: itemValue })
+                                        }>
+                                        <Picker.Item label="Male" value="male" />
+                                        <Picker.Item label="Female" value="female" />
+                                    </Picker>
+                                </Item>
+
+                                {/* <TextInput
+placeholder="Enter Your Mail.."
+style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+onChangeText={(email) => this.setState({ email })}
+value={this.state.email}
+/>
+<TextInput
+placeholder="Password"
+style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+onChangeText={(password) => this.setState({ password })}
+value={this.state.password}
+/> */}
+                                <Button style={styles.registrationbtn} iconLeft
+                                    onPress={_onPressSubmit}>
+                                    <Text>Register</Text>
+                                </Button>
+                            </Body>
+                        </CardItem>
+
+                    </Card>
+
+
+
+
+                    {/* <TextInput
+                        placeholder="Name"
+                        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                        onChangeText={(name) => this.setState({ name })}
+                        value={this.state.name}
+                    />
+                    <TextInput
+                        placeholder="Password"
+                        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                        onChangeText={(password) => this.setState({ password })}
+                        value={this.state.password}
+                    />
+                    <TextInput
+                        placeholder="Email"
+                        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                        onChangeText={(email) => this.setState({ email })}
+                        value={this.state.email}
+                    />
+
+                    <Picker
+                        selectedValue={this.state.gender}
+                        style={{ height: 50, width: 120 }}
+                        onValueChange={(itemValue, itemIndex) =>
+                            this.setState({ gender: itemValue })
+                        }>
+                        <Picker.Item label="Male" value="male" />
+                        <Picker.Item label="Female" value="female" />
+                    </Picker>
+                    <Button
+                        onPress={_onPressSubmit}
+                        title="Register Now"
+                        color="#841584"
+                        accessibilityLabel="Learn more about this purple button"
+                    /> */}
+                </View>
+            </Container>
+
+        );
+    }
+}
+const styles = StyleSheet.create({
+    logoContainer: {
+        flex: 1,
+        flexDirection: 'row'
+
+    },
+    formContainer: {
+        flex: 2,
+        width: '90%',
+        alignSelf: 'center'
+    },
+    logo: {
+        flex: 1,
+        height: null,
+        width: null,
+        resizeMode: "contain",
+
+    },
+    registrationCardHeaderTitle: {
+        width: "100%",
+        textAlign: "center"
+
+    },
+    registrationbtn: {
+        alignSelf: "center",
+        marginTop: 5
+    },
+    w100: {
+        width: '100%'
+    }, registrationCard: {
+        shadowColor: "red",
+        shadowRadius: 10,
+        shadowOpacity: 1,
+        shadowOffset: {
+            width: 2,
+            height: 2
+        }
+    }
+
+});
+export default RegistrationScreen;
